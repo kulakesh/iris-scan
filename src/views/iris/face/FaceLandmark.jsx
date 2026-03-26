@@ -63,10 +63,15 @@ const FaceLandmark = () => {
           
               }, 200);
         
-            const t = setTimeout(() => {
+            const redirectTimer = setTimeout(() => {
                 console.log('Redirect.......')
                 navigate(`/iris-scan-complete`)
             }, 2000);
+            
+            return () => {
+                clearTimeout(freezeTimer);
+                clearTimeout(redirectTimer);
+            };
         }
     }, [isLive])
 

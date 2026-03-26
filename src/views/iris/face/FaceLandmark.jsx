@@ -33,6 +33,7 @@ const FaceLandmark = () => {
     const [isLive, setIsLive] = useState(false);
     const isLiveRef = useRef(false);
     let animationIdRef = useRef(null);
+    const [isFaceRatioOk, setIsFaceRatioOk] = useState(false);
 
     useEffect(() => {
         if(isLive) {
@@ -177,92 +178,159 @@ const FaceLandmark = () => {
         if (isLiveRef.current) return;
 
 
-  if (!video || video.videoWidth === 0) return;
+        if (!video || video.videoWidth === 0) return;
         const results = faceLandmarker.detectForVideo(video, now);
 
         if (results.faceLandmarks?.length > 0) {
             const landmarks = results.faceLandmarks[0];
         
-            // 👁️ BLINK DETECTION
-            const leftEye = LEFT_EYE.map(i => landmarks[i]);
-            const rightEye = RIGHT_EYE.map(i => landmarks[i]);
-        
-            const ear = (getEAR(leftEye) + getEAR(rightEye)) / 2;
+            const canvas = canvasRef.current;
+            const faceOk = isFaceLargeEnough(landmarks, canvas);
+            setIsFaceRatioOk(faceOk)
+            if(faceOk){
+                // 👁️ BLINK DETECTION
+                const leftEye = LEFT_EYE.map(i => landmarks[i]);
+                const rightEye = RIGHT_EYE.map(i => landmarks[i]);
+            
+                const ear = (getEAR(leftEye) + getEAR(rightEye)) / 2;
 
-            // 👁️ detect closing
-            if (ear < EAR_THRESHOLD && !blinkRef.current.eyeClosed) {
-            blinkRef.current.eyeClosed = true;
-            }
+                // 👁️ detect closing
+                if (ear < EAR_THRESHOLD && !blinkRef.current.eyeClosed) {
+                blinkRef.current.eyeClosed = true;
+                }
 
-            // 👁️ detect opening → counts as 1 blink
-            if (
-            ear >= EAR_THRESHOLD &&
-            blinkRef.current.eyeClosed
-            ) {
-            const now = Date.now();
+                // 👁️ detect opening → counts as 1 blink
+                if (
+                ear >= EAR_THRESHOLD &&
+                blinkRef.current.eyeClosed
+                ) {
+                const now = Date.now();
 
-            // prevent double counting
-            if (now - blinkRef.current.lastBlinkTime > BLINK_COOLDOWN) {
-                blinkRef.current.blinkCount += 1;
-                blinkRef.current.lastBlinkTime = now;
-            }
+                // prevent double counting
+                if (now - blinkRef.current.lastBlinkTime > BLINK_COOLDOWN) {
+                    blinkRef.current.blinkCount += 1;
+                    blinkRef.current.lastBlinkTime = now;
+                }
 
-            blinkRef.current.eyeClosed = false;
-            }
+                blinkRef.current.eyeClosed = false;
+                }
 
-            blinkRef.current.lastEAR = ear;
-        
-            // 🎯 HEAD MOVEMENT (nose tracking)
-            const nose = landmarks[1];
-        
-            if (movementRef.current.startX === null) {
-              movementRef.current.startX = nose.x;
-            }
-        
-            if (
-              Math.abs(nose.x - movementRef.current.startX) > 0.05
-            ) {
-              movementRef.current.moved = true;
-            }
-        
-            // 📏 DEPTH CHECK
-            const zValues = landmarks.map(p => p.z);
-            const mean =
-              zValues.reduce((a, b) => a + b, 0) /
-              zValues.length;
-        
-            const variance =
-              zValues.reduce((a, b) => a + (b - mean) ** 2, 0) /
-              zValues.length;
-        
-            depthRef.current.values.push(variance);
-        
-            if (depthRef.current.values.length > 10) {
-              depthRef.current.values.shift();
-            }
-        
-            const avgDepth =
-              depthRef.current.values.reduce((a, b) => a + b, 0) /
-              depthRef.current.values.length;
-        
-            // ✅ FINAL LIVENESS CHECK
-            if (
-                blinkRef.current.blinkCount >= REQUIRED_BLINKS &&
-                movementRef.current.moved &&
-                avgDepth > 0.0005
-              ) {
-                setIsLive(true);
-                isLiveRef.current = true;
+                blinkRef.current.lastEAR = ear;
+            
+                // 🎯 HEAD MOVEMENT (nose tracking)
+                const nose = landmarks[1];
+            
+                if (movementRef.current.startX === null) {
+                movementRef.current.startX = nose.x;
+                }
+            
+                if (
+                Math.abs(nose.x - movementRef.current.startX) > 0.05
+                ) {
+                movementRef.current.moved = true;
+                }
+            
+                // 📏 DEPTH CHECK
+                const zValues = landmarks.map(p => p.z);
+                const mean =
+                zValues.reduce((a, b) => a + b, 0) /
+                zValues.length;
+            
+                const variance =
+                zValues.reduce((a, b) => a + (b - mean) ** 2, 0) /
+                zValues.length;
+            
+                depthRef.current.values.push(variance);
+            
+                if (depthRef.current.values.length > 10) {
+                depthRef.current.values.shift();
+                }
+            
+                const avgDepth =
+                depthRef.current.values.reduce((a, b) => a + b, 0) /
+                depthRef.current.values.length;
+                
+                // ✅ FINAL LIVENESS CHECK
+                if (
+                    blinkRef.current.blinkCount >= REQUIRED_BLINKS &&
+                    movementRef.current.moved &&
+                    avgDepth > 0.0005
+                ) {
+                    setIsLive(true);
+                    isLiveRef.current = true;
+                }
             }
         }
         draw(results);
         requestAnimationFrame(predict);
     };
 
+    const isFaceLargeEnough = (landmarks, canvas) => {
+        let minX = 1, minY = 1;
+        let maxX = 0, maxY = 0;
+      
+        landmarks.forEach(p => {
+          if (p.x < minX) minX = p.x;
+          if (p.y < minY) minY = p.y;
+          if (p.x > maxX) maxX = p.x;
+          if (p.y > maxY) maxY = p.y;
+        });
+      
+        const faceWidth = (maxX - minX) * canvas.width;
+        const faceHeight = (maxY - minY) * canvas.height;
+      
+        const faceArea = faceWidth * faceHeight;
+        const canvasArea = canvas.width * canvas.height;
+      
+        const ratio = faceArea / canvasArea;
+      
+        return ratio > 0.25; // 👈 tune this
+    }
+
     return (
         <div>
-            <video ref={videoRef} style={{ position: "absolute" }} />
-            <canvas ref={canvasRef} style={{ position: "absolute" }} />
+            <div style={{
+                position: "relative",
+                width: "100%",
+                maxWidth: "480px",
+                aspectRatio: "4 / 3"
+            }}>
+                <video
+                    ref={videoRef}
+                    style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "auto"
+                    }}
+                />
+
+                <canvas
+                    ref={canvasRef}
+                    style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "auto"
+                    }}
+                />
+            </div>
+            
+            {!isFaceRatioOk ? (
+            <div style={{
+                position: "absolute",
+                top: 10,
+                left: 10,
+                background: "red",
+                color: "white",
+                padding: "8px"
+            }}>
+                Move closer to the camera
+            </div>
+            ) 
+            : 
             <div
             style={{
                 position: "absolute",
@@ -273,8 +341,10 @@ const FaceLandmark = () => {
                 padding: "8px"
             }}
             >
-            {isLive ? "✅ Real Human" : "❌ Not Verified"}
+            {isLive ? "✅ Scan Complete" : "Move your face side to side"}
             </div>
+        }
+            
         </div>
       );
 }

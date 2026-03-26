@@ -1,1 +1,0 @@
-import{j as e,I as n}from"./index-Da94d2a1.js";const d=a=>{const{children:t,className:s,adaptiveCardActive:r,type:o,pageContainerReassemble:i}=a;return e.jsx(n.Provider,{value:{adaptiveCardActive:r,pageContainerReassemble:i,type:o},children:e.jsx("div",{className:s,children:t})})};export{d as L};

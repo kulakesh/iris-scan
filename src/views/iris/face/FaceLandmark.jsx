@@ -67,7 +67,7 @@ const FaceLandmark = () => {
                 console.log('Redirect.......')
                 navigate(`/iris-scan-complete`)
             }, 2000);
-            
+
             return () => {
                 clearTimeout(freezeTimer);
                 clearTimeout(redirectTimer);
@@ -152,6 +152,8 @@ const FaceLandmark = () => {
       
         return (A + B) / (2.0 * C);
     };
+    let lastTime = 0;
+    const FPS = 15; // 👈 ideal
     const predict = async () => {
         
         animationIdRef.current = requestAnimationFrame(predict);
@@ -169,6 +171,13 @@ const FaceLandmark = () => {
         ) return;
 
         const now = Date.now();
+        if (now - lastTime < 1000 / FPS) return;
+        lastTime = now;
+
+        if (isLiveRef.current) return;
+
+
+  if (!video || video.videoWidth === 0) return;
         const results = faceLandmarker.detectForVideo(video, now);
 
         if (results.faceLandmarks?.length > 0) {

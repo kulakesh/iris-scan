@@ -175,9 +175,6 @@ const FaceLandmark = () => {
         if (now - lastTime < 1000 / FPS) return;
         lastTime = now;
 
-        if (isLiveRef.current) return;
-
-
         if (!video || video.videoWidth === 0) return;
         const results = faceLandmarker.detectForVideo(video, now);
 

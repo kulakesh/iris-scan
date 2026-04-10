@@ -7,7 +7,16 @@ import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router'
+import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
+import ApiService from '@/services/ApiService'
 
+async function pushData(data) {
+    return ApiService.fetchDataWithAxios({
+        url: '/iris-ai-register',
+        method: 'post',
+        data,
+    })
+}
 const validationSchema = z.object({
     email: z
         .string()
@@ -34,11 +43,33 @@ const HeroContent = ({ mode }) => {
         },
         resolver: zodResolver(validationSchema),
     })
-    const onSignIn = async (values) => {
-        const { email, phone } = values
-
-        console.log({ email, phone })
-        navigate(`/iris-scan`)
+    
+    const [message, setMessage] = useTimeOutMessage()
+    const onSubmit = async (values) => {
+        const{ email, phone } = values
+        try{
+            const resp = await pushData(values)
+            if (resp) {
+                navigate(`/iris-scan`, {
+                    state: {
+                        email,
+                        phone,
+                        id: resp?.id
+                    },
+                })
+            }
+        }catch (e) {
+            setMessage?.({
+                text: e?.response?.data?.message || e.message.toString() || e.toString(),
+                type: 'danger'
+            })
+            for (var key in e?.response?.data?.errors) {
+                setError(key, {
+                    type: 'manual',
+                    message: e?.response?.data?.errors[key],
+                })
+            }
+        }
     }
     return (
         <div className="max-w-7xl mx-auto px-4 flex min-h-screen flex-col items-center justify-between">
@@ -76,11 +107,12 @@ const HeroContent = ({ mode }) => {
                         transition={{ duration: 0.3, delay: 0.6 }}
                         className="flex items-center gap-4 justify-center mt-10 relative z-10"
                     >
-                        <Form onSubmit={handleSubmit(onSignIn)}>
-                            <div className="flex flex-row gap-4 items-center">
+                        <Form onSubmit={handleSubmit(onSubmit)}>
+                            <div className="flex flex-col md:flex-row gap-4 items-center md:gap-2">
                                 <FormItem
                                     invalid={Boolean(errors.email)}
                                     errorMessage={errors.email?.message}
+                                    className="mb-0"
                                 >
                                     <Controller
                                         name="email"
@@ -99,6 +131,7 @@ const HeroContent = ({ mode }) => {
                                 <FormItem
                                     invalid={Boolean(errors.phone)}
                                     errorMessage={errors.phone?.message}
+                                    className="mb-0"
                                 >
                                     <Controller
                                         name="phone"
@@ -114,7 +147,9 @@ const HeroContent = ({ mode }) => {
                                         )}
                                     />
                                 </FormItem>
-                                <FormItem>
+                                <FormItem
+                                     className="mb-0"
+                                >
                                 <Button variant="solid" type="submit" className="w-auto">
                                     Preview
                                 </Button>

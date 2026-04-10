@@ -1,10 +1,15 @@
-import HeroContent from './components/HeroContent'
-import NavigationBar from './components/NavigationBar'
+import NavigationBar from '../Initiate/components/NavigationBar'
 import { useThemeStore } from '@/store/themeStore'
 import useDarkMode from '@/utils/hooks/useDarkMode'
 import { MODE_DARK, MODE_LIGHT } from '@/constants/theme.constant'
+import FaceLandmark from './FaceLandmark'
+import { useLocation, useNavigate } from 'react-router'
 
 const Initiate = () => {
+    const navigate = useNavigate()
+    const location = useLocation()
+    const return_data = location.state
+
     const [isDark, setMode] = useDarkMode()
 
     const mode = isDark ? MODE_DARK : MODE_LIGHT
@@ -14,6 +19,12 @@ const Initiate = () => {
 
     const toggleMode = () => {
         setMode(mode === MODE_LIGHT ? MODE_DARK : MODE_LIGHT)
+    }
+
+    const goToRegistration = () => {
+        navigate(`/iris-registration`, {
+            state: return_data,
+        })
     }
 
     return (
@@ -26,7 +37,9 @@ const Initiate = () => {
                     }}
                     className="absolute inset-0 [mask-image:linear-gradient(to_bottom,white_5%,transparent_70%)] pointer-events-none select-none"
                 ></div>
-                <HeroContent mode={mode} />
+                <div className="p-2 lg:p-4 border border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-700 rounded-2xl lg:rounded-[32px] mt-20 relative mx-10">
+                    <FaceLandmark handleRedirect={goToRegistration} />
+                </div>
             </div>
             
         </main>

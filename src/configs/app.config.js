@@ -1,5 +1,5 @@
 const appConfig = {
-    apiPrefix: '/api',
+    apiPrefix: import.meta.env.VITE_APP_API_URL,
     authenticatedEntryPath: '/home',
     unAuthenticatedEntryPath: '/initiate',
     locale: 'en',

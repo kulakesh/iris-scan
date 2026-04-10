@@ -4,7 +4,6 @@ import {
   FilesetResolver,
   DrawingUtils
 } from "@mediapipe/tasks-vision";
-import { useNavigate } from 'react-router'
 
 
 
@@ -13,8 +12,7 @@ const RIGHT_EYE = [362, 385, 387, 263, 373, 380];
 const EAR_THRESHOLD = 0.2;
 const BLINK_COOLDOWN = 400; // ms between blinks
 const REQUIRED_BLINKS = 2;
-const FaceLandmark = () => {
-    const navigate = useNavigate()
+const FaceLandmark = ({handleRedirect}) => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     let faceLandmarker;
@@ -66,7 +64,7 @@ const FaceLandmark = () => {
         
             const redirectTimer = setTimeout(() => {
                 console.log('Redirect.......')
-                navigate(`/iris-scan-complete`)
+                handleRedirect()
             }, 2000);
 
             return () => {
@@ -283,67 +281,47 @@ const FaceLandmark = () => {
       
         return ratio > 0.25; // 👈 tune this
     }
-
     return (
-        <div>
-            <div style={{
-                position: "relative",
-                width: "100%",
-                maxWidth: "480px",
-                aspectRatio: "4 / 3"
-            }}>
-                <video
+    <div className="p-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="sm:w-1/2 sm:order-first">
+                <div className="relative w-full aspect-[4/3]"
+                    style={{
+                    maxWidth: "640px",
+                }}>
+                    <video
                     ref={videoRef}
-                    style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "auto"
-                    }}
-                />
+                    className="absolute top-0 left-0 w-full h-auto"
+                    />
 
-                <canvas
+                    <canvas
                     ref={canvasRef}
-                    style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "auto"
-                    }}
-                />
+                    className="absolute top-0 left-0 w-full h-auto"
+                    />
+
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 text-white text-sm px-3 py-1 rounded-lg">
+                    {
+                    !isFaceRatioOk ? ("❌ Move closer to the camera") 
+                    : (isLive ? "✅ Scan Complete" : "⚠️ Move your face side to side")
+                    }
+                    </div>
+                </div>
             </div>
-            
-            {!isFaceRatioOk ? (
-            <div style={{
-                position: "absolute",
-                top: 10,
-                left: 10,
-                background: "red",
-                color: "white",
-                padding: "8px"
-            }}>
-                Move closer to the camera
+            <div className="sm:w-1/2 sm:order-last">
+                <h2 className="text-3xl font-semibold">Instructions</h2>
+                <ul className="list-disc pl-4 text-2xl">
+                    <li>Look straight into the camera</li>
+                    <li>Ensure good lighting on your face</li>
+                    <li>Remove glasses if glare appears</li>
+                    <li>Avoid backlight (bright light behind you)</li>
+                    <li>Keep your face inside the frame</li>
+                    <li>Move your head slightly (left/right)</li>
+                    <li>Stay still for a moment</li>
+                </ul>
             </div>
-            ) 
-            : 
-            <div
-            style={{
-                position: "absolute",
-                top: 10,
-                left: 10,
-                color: "white",
-                background: isLive ? "green" : "red",
-                padding: "8px"
-            }}
-            >
-            {isLive ? "✅ Scan Complete" : "Move your face side to side"}
-            </div>
-        }
-            
         </div>
-      );
+    </div>
+    )
 }
 
 export default FaceLandmark;

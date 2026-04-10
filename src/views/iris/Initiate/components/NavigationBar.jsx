@@ -10,22 +10,22 @@ const navMenu = [
     {
         title: 'Features',
         value: 'features',
-        to: 'features',
+        to: '!#features',
     },
     {
         title: 'Demos',
         value: 'demos',
-        to: 'demos',
+        to: '!#demos',
     },
     {
         title: 'Components',
         value: 'components',
-        to: 'components',
+        to: '!#components',
     },
     {
         title: 'Documentations',
         value: 'documentations',
-        href: 'components',
+        href: '!#components',
     },
 ]
 
@@ -65,7 +65,7 @@ const Navigation = ({ toggleMode, mode }) => {
                     <TbMenu2 size={24} />
                 </button>
                 <Drawer
-                    title="Navigation"
+                    title=""
                     isOpen={isOpen}
                     width={250}
                     placement="left"

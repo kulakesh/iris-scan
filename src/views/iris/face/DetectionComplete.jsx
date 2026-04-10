@@ -1,7 +1,13 @@
 import Container from '@/components/shared/Container'
 import ScanComplete from '@/assets/svg/ScanComplete'
+import { useLocation } from 'react-router'
 
 const DetectionComplete = () => {
+    const location = useLocation()
+    const return_data = location.state
+    console.log('return_data on DetectionComplete', return_data);
+    
+
     return (
         <Container className="h-full">
             <div className="h-full flex flex-col items-center justify-center">

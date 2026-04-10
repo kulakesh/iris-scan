@@ -10,13 +10,19 @@ const publicRoutes = [
     {
         key: 'iris-scan',
         path: 'iris-scan/',
-        component: lazy(() => import('@/views/iris/face/FaceLandmark')),
+        component: lazy(() => import('@/views/iris/face/Scan')),
         authority: [],
     },
     {
         key: 'iris-scan-complete',
         path: 'iris-scan-complete/',
         component: lazy(() => import('@/views/iris/face/DetectionComplete')),
+        authority: [],
+    },
+    {
+        key: 'iris-registration',
+        path: 'iris-registration/',
+        component: lazy(() => import('@/views/iris/Registration/Registration')),
         authority: [],
     },
 ]

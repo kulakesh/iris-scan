@@ -22,7 +22,7 @@ const Registration = () => {
     }
 
     const goToRegistration = () => {
-        navigate(`/iris-scan-complete`, {
+        navigate(`/iris-process-data`, {
             state: return_data,
         })
     }

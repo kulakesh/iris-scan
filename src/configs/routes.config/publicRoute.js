@@ -25,6 +25,12 @@ const publicRoutes = [
         component: lazy(() => import('@/views/iris/Registration/Registration')),
         authority: [],
     },
+    {
+        key: 'iris-process-data',
+        path: 'iris-process-data/',
+        component: lazy(() => import('@/views/iris/Process')),
+        authority: [],
+    }
 ]
 
 export default publicRoutes

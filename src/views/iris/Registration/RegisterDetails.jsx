@@ -16,6 +16,7 @@ import { useNavigate, useLocation } from 'react-router'
 import { useState } from 'react'
 import DatePicker from '@/components/ui/DatePicker'
 import dayjs from 'dayjs'
+import { Select } from '@/components/ui'
 
 const validationSchema = z.object({
     // return_id: z.string(),
@@ -28,6 +29,7 @@ const validationSchema = z.object({
         .string().refine((value) => /^\d{10,10}$/.test(value), {
             message: "Invalid phone number",
         }),
+    gender: z.string().min(4, 'Gender Required'),
     dob: z.string().min(4, 'Date of birth Required'),
     city: z.string().min(4, 'City Required'),
     state: z.string().min(4, 'State Required'),
@@ -48,6 +50,11 @@ const RegisterDetails = ({handleRedirect}) => {
     const return_data = location.state
 
     const [loading, setLoading] = useState(false);
+
+    const gender = [
+        { label: 'Male', value: 'Male', }, 
+        { label: 'Female', value: 'Female', },
+    ]
     
     const {
         handleSubmit,
@@ -132,6 +139,26 @@ const RegisterDetails = ({handleRedirect}) => {
                                 />
                             </FormItem>
                             <FormItem
+                                asterisk
+                                label="Gender"
+                                invalid={Boolean(errors.gender)}
+                                errorMessage={errors.gender?.message}
+                            >
+                                <Controller
+                                    name="gender"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select
+                                            options={gender}
+                                            placeholder="Gender"
+                                            {...field}
+                                            value={gender.find(opt => opt.value === field.value) || null}
+                                            onChange={(selected) => field.onChange(selected?.value)}
+                                        />
+                                    )}
+                                />
+                            </FormItem>
+                            <FormItem
                                 label="Date of Birth"
                                 invalid={Boolean(errors.dob)}
                                 errorMessage={errors.dob?.message}
@@ -160,6 +187,8 @@ const RegisterDetails = ({handleRedirect}) => {
                                     )}
                                 />
                             </FormItem>
+                        </div>
+                        <div>
                             <FormItem
                                 label="Phone"
                                 invalid={Boolean(errors.phone)}
@@ -178,8 +207,6 @@ const RegisterDetails = ({handleRedirect}) => {
                                     )}
                                 />
                             </FormItem>
-                        </div>
-                        <div>
                             <FormItem
                                 label="City"
                                 invalid={Boolean(errors.city)}

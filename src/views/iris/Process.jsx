@@ -7,7 +7,8 @@ import Spinner from '@/components/ui/Spinner'
 import { ImSpinner3, ImCheckmark, ImDownload } from 'react-icons/im'
 import { useLocation } from 'react-router'
 import { IconText } from '@/components/shared'
-
+import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
+import Alert from '@/components/ui/Alert'
 import Button from '@/components/ui/Button'
 
 async function apiGenerateLLM(id){
@@ -39,7 +40,7 @@ const Initiate = () => {
 
     const mode = isDark ? MODE_DARK : MODE_LIGHT
 
-    const [apierror, setApiError] = useState(null);
+    const [message, setMessage] = useTimeOutMessage()
 
     const [llmDone, setLlmDone] = useState(false)
     const [jsonDone, setJsonDone] = useState(false)
@@ -49,16 +50,16 @@ const Initiate = () => {
     useEffect(() => {
         const runProcess = async () => {
             try {
-                const llmResponds = await apiGenerateLLM(return_data.id)
+                const llmResponds = await apiGenerateLLM(return_data.return_id)
                 console.log('llmResponds', llmResponds);
                 
                 if (llmResponds.status === 'OK') {
                     setLlmDone(true)
-                    const jsonResponds = await apiGenerateJson(return_data.id)
+                    const jsonResponds = await apiGenerateJson(return_data.return_id)
                     console.log('jsonResponds', jsonResponds);
                     if(jsonResponds.status === 'OK'){
                         setJsonDone(true)
-                        const reportResponds = await apiGenerateReport(return_data.id)
+                        const reportResponds = await apiGenerateReport(return_data.return_id)
                         console.log('reportResponds', reportResponds);
                         if(reportResponds.status === 'OK'){
                             setReportUrl(reportResponds.url)
@@ -67,18 +68,28 @@ const Initiate = () => {
                         }
                     }
                 }
-            } catch (error) {
-                setApiError(error)
+            } catch (e) {
+                setMessage?.({
+                    text: e.message.toString() || e.toString(),
+                    type: 'danger'
+                })
+
             }
         }
+        // const testProcess = async () => {
+        //     try {
+        //         const reportResponds = await apiGenerateReport('VtrMK0nD7aHd')
+        //         console.log('reportResponds', reportResponds);
+                
+        //     } catch (error) {
+        //         setApiError(error)
+        //     }
+        // }
         runProcess();
     }, [])
 
     const toggleMode = () => {
         setMode(mode === MODE_LIGHT ? MODE_DARK : MODE_LIGHT)
-    }
-    if (apierror) {
-        return <div>{apierror.message}</div>
     }
     return (
         <main className="px-4 lg:px-0 text-base">
@@ -93,6 +104,11 @@ const Initiate = () => {
                 <div className="p-2 lg:p-4 border border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-700 rounded-2xl lg:rounded-[32px] mt-20 relative lg:mx-10 sm:px-1 lg:px-50">
                     <div className="flex items-center justify-center">
                         <div className="grid grid-rows-1 gap-4">
+                        {message && (
+                            <Alert showIcon className="mb-4" type={message.type}>
+                                <span className="break-all">{message.text}</span>
+                            </Alert>
+                        )}
                             <div>
                                 <IconText
                                     className="text-emerald-500 text-sm font-semibold"
@@ -146,7 +162,6 @@ const Initiate = () => {
                                     variant="solid"
                                     className="w-full"
                                     onClick={() => {
-                                        console.log('reportUrl', reportUrl)
                                         window.open(reportUrl)
                                     }}
                                 >

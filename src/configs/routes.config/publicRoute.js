@@ -2,6 +2,12 @@ import { lazy } from 'react'
 
 const publicRoutes = [
     {
+        key: 'iris-scan-complete',
+        path: 'iris-scan-complete/',
+        component: lazy(() => import('@/views/iris/face/DetectionComplete')),
+        authority: [],
+    },
+    {
         key: 'initiate',
         path: 'initiate/',
         component: lazy(() => import('@/views/iris/Initiate/Initiate')),
@@ -14,15 +20,15 @@ const publicRoutes = [
         authority: [],
     },
     {
-        key: 'iris-scan-complete',
-        path: 'iris-scan-complete/',
-        component: lazy(() => import('@/views/iris/face/DetectionComplete')),
-        authority: [],
-    },
-    {
         key: 'iris-registration',
         path: 'iris-registration/',
         component: lazy(() => import('@/views/iris/Registration/Registration')),
+        authority: [],
+    },
+    {
+        key: 'iris-payment',
+        path: 'iris-payment/',
+        component: lazy(() => import('@/views/iris/Payment')),
         authority: [],
     },
     {
@@ -30,7 +36,7 @@ const publicRoutes = [
         path: 'iris-process-data/',
         component: lazy(() => import('@/views/iris/Process')),
         authority: [],
-    }
+    },
 ]
 
 export default publicRoutes

@@ -50,11 +50,13 @@ const HeroContent = ({ mode }) => {
         try{
             const resp = await pushData(values)
             if (resp) {
+                console.log('resp in Initiate', resp);
+                
                 navigate(`/iris-scan`, {
                     state: {
                         email,
                         phone,
-                        id: resp?.id
+                        return_id: resp?.return_id
                     },
                 })
             }

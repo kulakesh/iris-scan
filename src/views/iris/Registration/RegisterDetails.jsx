@@ -2,16 +2,13 @@
 import { FormItem, Form } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
-import Container from '@/components/shared/Container'
 import Card from '@/components/ui/Card'
-import BottomStickyBar from '@/components/template/BottomStickyBar'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import ApiService from '@/services/ApiService'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
 import Alert from '@/components/ui/Alert'
-import Loading from '@/components/shared/Loading'
 import { useNavigate, useLocation } from 'react-router'
 import { useState } from 'react'
 import DatePicker from '@/components/ui/DatePicker'
@@ -64,7 +61,6 @@ const RegisterDetails = ({handleRedirect}) => {
         control,
     } = useForm({
         defaultValues: {
-            return_id: return_data?.id,
             name: '',
             dob: '',
             email: return_data?.email,
@@ -79,7 +75,7 @@ const RegisterDetails = ({handleRedirect}) => {
     const [message, setMessage] = useTimeOutMessage()
 
     const onSubmit = async (values) => {
-        const finalValue = { ...values, return_id: return_data?.id }
+        const finalValue = { ...values, return_id: return_data?.return_id }
 
         try{
             setLoading(true)

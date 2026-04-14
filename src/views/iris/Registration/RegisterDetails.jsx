@@ -14,6 +14,7 @@ import { useState } from 'react'
 import DatePicker from '@/components/ui/DatePicker'
 import dayjs from 'dayjs'
 import { Select } from '@/components/ui'
+import countries from './countries'
 
 const validationSchema = z.object({
     // return_id: z.string(),
@@ -159,11 +160,12 @@ const RegisterDetails = ({handleRedirect}) => {
                                 invalid={Boolean(errors.dob)}
                                 errorMessage={errors.dob?.message}
                             >
-                                <DatePicker
-                                            placeholder="DOB"
-                                            inputFormat="DD MMM, YYYY"
-                                            onChange={setDateOfBirth}
-                                        />
+                                    <DatePicker
+                                        placeholder="YYYY-MM-DD"
+                                        inputFormat="YYYY-MM-DD"
+                                        inputtable
+                                        onChange={setDateOfBirth}
+                                    />
                             </FormItem>
                             <FormItem
                                 label="Email"
@@ -248,11 +250,12 @@ const RegisterDetails = ({handleRedirect}) => {
                                     name="country"
                                     control={control}
                                     render={({ field }) => (
-                                        <Input
-                                            type="text"
-                                            autoComplete="off"
+                                        <Select
+                                            options={countries}
                                             placeholder="Country Name"
                                             {...field}
+                                            value={countries.find(opt => opt.value === field.value) || null}
+                                            onChange={(selected) => field.onChange(selected?.value)}
                                         />
                                     )}
                                 />

@@ -51,19 +51,14 @@ const Initiate = () => {
         const runProcess = async () => {
             try {
                 const llmResponds = await apiGenerateLLM(return_data.return_id)
-                console.log('llmResponds', llmResponds);
-                
                 if (llmResponds.status === 'OK') {
                     setLlmDone(true)
                     const jsonResponds = await apiGenerateJson(return_data.return_id)
-                    console.log('jsonResponds', jsonResponds);
                     if(jsonResponds.status === 'OK'){
                         setJsonDone(true)
                         const reportResponds = await apiGenerateReport(return_data.return_id)
-                        console.log('reportResponds', reportResponds);
                         if(reportResponds.status === 'OK'){
                             setReportUrl(reportResponds.url)
-                            console.log('reportUrl', reportResponds.url);
                             setReportDone(true)
                         }
                     }
@@ -85,7 +80,7 @@ const Initiate = () => {
         //         setApiError(error)
         //     }
         // }
-        runProcess();
+        // runProcess();
     }, [])
 
     const toggleMode = () => {

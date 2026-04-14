@@ -13,21 +13,21 @@ import Button from '@/components/ui/Button'
 
 async function apiGenerateLLM(id){
     return ApiService.fetchDataWithAxios({
-        url: '/iris-ai?return_id='+id,
+        url: '/iris-ai/'+id,
         method: 'get',
         timeout: 1000000,
     })
 }
 async function apiGenerateJson(id){
     return ApiService.fetchDataWithAxios({
-        url: '/iris-ai-gen-json?return_id='+id,
+        url: '/iris-ai-gen-json/'+id,
         method: 'get',
         timeout: 1000000,
     })
 }
 async function apiGenerateReport(id){
     return ApiService.fetchDataWithAxios({
-        url: '/iris-ai-report?return_id='+id,
+        url: '/iris-ai-report/'+id,
         method: 'get',
         timeout: 1000000,
     })
@@ -80,7 +80,7 @@ const Initiate = () => {
         //         setApiError(error)
         //     }
         // }
-        // runProcess();
+        runProcess();
     }, [])
 
     const toggleMode = () => {

@@ -268,7 +268,7 @@ const RegisterDetails = ({handleRedirect}) => {
                     className="mb-0"
                 >
                     <Button loading={loading} variant="solid" type="submit" className="w-auto">
-                        Preview
+                        Submit
                     </Button>
                 </FormItem>
                 </div>

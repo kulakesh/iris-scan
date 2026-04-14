@@ -153,7 +153,7 @@ const HeroContent = ({ mode }) => {
                                      className="mb-0"
                                 >
                                 <Button variant="solid" type="submit" className="w-auto">
-                                    Preview
+                                    Submit
                                 </Button>
                                 </FormItem>
                                     

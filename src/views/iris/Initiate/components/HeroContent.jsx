@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
 import ApiService from '@/services/ApiService'
+import { useState } from 'react'
 
 async function pushData(data) {
     return ApiService.fetchDataWithAxios({
@@ -30,6 +31,7 @@ const validationSchema = z.object({
 
 const HeroContent = ({ mode }) => {
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false);
     const {
         handleSubmit,
         reset,
@@ -48,6 +50,7 @@ const HeroContent = ({ mode }) => {
     const onSubmit = async (values) => {
         const{ email, phone } = values
         try{
+            setLoading(true)
             const resp = await pushData(values)
             if (resp) {
                 console.log('resp in Initiate', resp);
@@ -72,6 +75,7 @@ const HeroContent = ({ mode }) => {
                 })
             }
         }
+        setLoading(false)
     }
     return (
         <div className="max-w-7xl mx-auto px-4 flex min-h-screen flex-col items-center justify-between">
@@ -121,7 +125,7 @@ const HeroContent = ({ mode }) => {
                                         control={control}
                                         render={({ field }) => (
                                             <Input
-                                                type="text"
+                                                type="email"
                                                 autoComplete="off"
                                                 placeholder="Email"
                                                 className={mode === MODE_LIGHT ? 'border-primary' : ''}
@@ -152,7 +156,7 @@ const HeroContent = ({ mode }) => {
                                 <FormItem
                                      className="mb-0"
                                 >
-                                <Button variant="solid" type="submit" className="w-auto">
+                                <Button loading={loading} variant="solid" type="submit" className="w-auto">
                                     Submit
                                 </Button>
                                 </FormItem>

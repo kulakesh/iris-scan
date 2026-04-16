@@ -4,7 +4,7 @@ const publicRoutes = [
     {
         key: 'iris-scan-complete',
         path: 'iris-scan-complete/',
-        component: lazy(() => import('@/views/iris/face/DetectionComplete')),
+        component: lazy(() => import('@/views/iris/face/FaceLandmarkNew')),
         authority: [],
     },
     {

@@ -77,7 +77,7 @@ const Initiate = () => {
                 if(irisStatus.status_code > 3)
                     setSentEmail(true)
 
-                // console.log('status code from server :' + irisStatus.status_code)
+                console.log('status code from server :' + irisStatus.status_code)
                 setStatusCode(irisStatus.status_code)
             }
         }

@@ -33,7 +33,7 @@ const publicRoutes = [
     },
     {
         key: 'iris-process-data',
-        path: 'iris-process-data/',
+        path: 'iris-process-data/:return_id',
         component: lazy(() => import('@/views/iris/Process')),
         authority: [],
     },

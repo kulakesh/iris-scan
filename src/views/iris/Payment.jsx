@@ -35,9 +35,7 @@ const Payment = () => {
     
         
             if (event.data.status === "OK") {
-                navigate(`/iris-process-data`, {
-                    state: return_data,
-                })
+                navigate("/iris-process-data/" + return_data.return_id)
             }
         };
         

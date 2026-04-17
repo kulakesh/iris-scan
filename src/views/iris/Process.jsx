@@ -200,7 +200,7 @@ const Initiate = () => {
                                 >
                                     {
                                         !jsonDone ? ('Analyzing data...')
-                                        : ( 'Data Analysis complete' )
+                                        : ( 'Iris Analysis complete' )
                                     }
                                 </IconText>
                             </div>

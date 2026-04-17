@@ -147,7 +147,6 @@ const FaceLandmarkNew = ({handleRedirect}) => {
     };
     const scanRef = useRef({
         currentEye: "left",
-        lastSwitch: Date.now(),
         position: { x: 0, y: 0 }
     });
     const drawIrisScanner = (ctx, center, eyeSize) => {
@@ -283,9 +282,8 @@ const FaceLandmarkNew = ({handleRedirect}) => {
         const video = videoRef.current;
 
         const now = Date.now();
-        if (now - scanRef.current.lastSwitch > SWITCH_INTERVAL && scanRef.current.currentEye === "left") {
+        if (validTimeRef.current > SWITCH_INTERVAL && scanRef.current.currentEye === "left") {
             scanRef.current.currentEye = "right";
-            scanRef.current.lastSwitch = now;
         }
 
         if (
@@ -445,7 +443,6 @@ const FaceLandmarkNew = ({handleRedirect}) => {
       
         const avgBrightness = totalBrightness / (data.length / 40 / 4);
       
-        console.log('avgBrightness:' + avgBrightness);
         return avgBrightness < 200; // 👈 threshold
     };
     return (

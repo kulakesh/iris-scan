@@ -77,7 +77,7 @@ const Initiate = () => {
                 if(irisStatus.status_code > 3)
                     setSentEmail(true)
 
-                console.log('status code from server :' + irisStatus.status_code)
+                // console.log('status code from server :' + irisStatus.status_code)
                 setStatusCode(irisStatus.status_code)
             }
         }
@@ -86,6 +86,7 @@ const Initiate = () => {
     useEffect(() => {
         const runProcess = async () => {
             try {
+                console.log('status code', statusCode)
                 if(statusCode === 0){
                     const llmResponds = await apiGenerateLLM(return_id)
                     if (llmResponds.status === 'OK') {

@@ -87,21 +87,22 @@ const Initiate = () => {
         const runProcess = async () => {
             try {
                 console.log('status code', statusCode)
-                if(statusCode === 0){
+                console.log('status equels', statusCode == 0)
+                if(statusCode == 0){
                     const llmResponds = await apiGenerateLLM(return_id)
                     if (llmResponds.status === 'OK') {
                         setStatusCode(1)
                         setLlmDone(true)
                     }
                 }
-                if(statusCode === 1){
+                if(statusCode == 1){
                     const jsonResponds = await apiGenerateJson(return_id)
                     if (jsonResponds.status === 'OK') {
                         setStatusCode(2)
                         setJsonDone(true)
                     }
                 }
-                if(statusCode === 2){
+                if(statusCode == 2){
                     const reportResponds = await apiGenerateReport(return_id)
                     if (reportResponds.status === 'OK') {
                         setStatusCode(3)
@@ -109,7 +110,7 @@ const Initiate = () => {
                         setReportDone(true)
                     }
                 }
-                if(statusCode === 3){
+                if(statusCode == 3){
                     const emailResponds = await apiSendEmail(return_id)
                     if (emailResponds.status === 'OK') {
                         // setStatusCode(4)

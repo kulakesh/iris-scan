@@ -4,6 +4,7 @@ import useDarkMode from '@/utils/hooks/useDarkMode'
 import { MODE_DARK, MODE_LIGHT } from '@/constants/theme.constant'
 import FaceLandmark from './FaceLandmark'
 import { useLocation, useNavigate } from 'react-router'
+import FaceLandmarkNew from './FaceLandmarkNew'
 
 const Initiate = () => {
     const navigate = useNavigate()
@@ -38,7 +39,7 @@ const Initiate = () => {
                     className="absolute inset-0 [mask-image:linear-gradient(to_bottom,white_5%,transparent_70%)] pointer-events-none select-none"
                 ></div>
                 <div className="p-2 lg:p-4 border border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-700 rounded-2xl lg:rounded-[32px] mt-20 relative mx-10">
-                    <FaceLandmark handleRedirect={goToRegistration} />
+                    <FaceLandmarkNew handleRedirect={goToRegistration} />
                 </div>
             </div>
             

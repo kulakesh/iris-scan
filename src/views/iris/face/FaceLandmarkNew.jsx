@@ -4,6 +4,9 @@ import {
   FilesetResolver,
   DrawingUtils
 } from "@mediapipe/tasks-vision";
+import { IconText } from '@/components/shared'
+import {  ImCheckmark, ImCamera } from 'react-icons/im'
+import { PiLightbulbFill, PiWarningBold } from 'react-icons/pi'
 
 
 
@@ -462,14 +465,43 @@ const FaceLandmarkNew = ({handleRedirect}) => {
                     ref={canvasRef}
                     className="absolute top-0 left-0 w-full h-auto"
                     />
-
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 text-white text-sm px-3 py-1 rounded-lg">
-                    {
-                    isDark ? ("❌ Move closer to the light") :
-                    !isFaceRatioOk ? ("❌ Move closer to the camera") :
-                    (isLive ? "✅ Scan Complete" : "⚠️ Move your face side to side")
-                    }
+                    {isDark || !isFaceRatioOk
+                    ? (
+                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white/30 p-4 backdrop-blur-md font-bold text-white">
+                        <div className="bg-black/60 text-white text-sm px-3 py-1 rounded-lg">
+                        {
+                        isDark ? (<IconText
+                                    icon={<PiLightbulbFill className="text-lg" />}
+                                  >
+                                    Not enough light
+                                  </IconText>) :
+                        !isFaceRatioOk && (<IconText
+                                                icon={<ImCamera className="text-lg" />}
+                                            >
+                                                Move closer to the camera
+                                            </IconText>) 
+                        }
+                        </div>
                     </div>
+                    )
+                    : (
+                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 text-white text-sm px-3 py-1 rounded-lg">
+                        {
+                            isLive ? (<IconText
+                                icon={<ImCheckmark className="text-lg" />}
+                            >
+                                Scan Complete
+                            </IconText>)  
+                            : (<IconText
+                                icon={<PiWarningBold className="text-lg" />}
+                            >
+                                Move your face side to side
+                            </IconText>)
+                        }
+                        </div>
+                    )
+                    }
+                    
                 </div>
             </div>
             <div className="sm:w-1/2 sm:order-last">

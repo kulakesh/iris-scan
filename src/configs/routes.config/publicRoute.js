@@ -37,6 +37,12 @@ const publicRoutes = [
         component: lazy(() => import('@/views/iris/Process')),
         authority: [],
     },
+    {
+        key: 'xyz',
+        path: 'xyz/',
+        component: lazy(() => import('@/views/xyz-lotteries')),
+        authority: [],
+    },
 ]
 
 export default publicRoutes
